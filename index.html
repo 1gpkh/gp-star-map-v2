@@ -1,0 +1,122 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GP Star Map v2</title>
+
+<style>
+body{
+  font-family:Arial,sans-serif;
+  background:#0a0f1f;
+  color:white;
+  margin:0;
+  padding:20px;
+}
+
+h1{
+  text-align:center;
+  color:gold;
+}
+
+form{
+  max-width:600px;
+  margin:auto;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+select,input,textarea,button{
+  padding:12px;
+  border-radius:8px;
+  border:none;
+}
+
+button{
+  background:gold;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+#stars{
+  max-width:800px;
+  margin:40px auto;
+}
+
+.star{
+  background:#151d36;
+  padding:15px;
+  margin-bottom:10px;
+  border-radius:10px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>⭐ GP Kindness Galaxy ⭐</h1>
+
+<form id="starForm">
+  <select id="category">
+    <option value="Kindness">Kindness</option>
+    <option value="Love">Love</option>
+    <option value="Hope">Hope</option>
+    <option value="Faith">Faith</option>
+  </select>
+
+  <input type="text" id="name" placeholder="Your name (optional)">
+
+  <textarea id="description" placeholder="Describe your act..." required></textarea>
+
+  <button type="submit">Release Your Star</button>
+</form>
+
+<div id="stars"></div>
+
+<script>
+
+const form=document.getElementById('starForm');
+const starsDiv=document.getElementById('stars');
+
+function loadStars(){
+  const stars=JSON.parse(localStorage.getItem('stars'))||[];
+
+  starsDiv.innerHTML='';
+
+  stars.reverse().forEach(star=>{
+    starsDiv.innerHTML+=`
+      <div class="star">
+        <h3>${star.category}</h3>
+        <strong>${star.name || 'Anonymous Star'}</strong>
+        <p>${star.description}</p>
+      </div>
+    `;
+  });
+}
+
+form.addEventListener('submit',e=>{
+  e.preventDefault();
+
+  const star={
+    category:document.getElementById('category').value,
+    name:document.getElementById('name').value,
+    description:document.getElementById('description').value
+  };
+
+  const stars=JSON.parse(localStorage.getItem('stars'))||[];
+  stars.push(star);
+
+  localStorage.setItem('stars',JSON.stringify(stars));
+
+  form.reset();
+  loadStars();
+});
+
+loadStars();
+
+</script>
+
+</body>
+</html>
