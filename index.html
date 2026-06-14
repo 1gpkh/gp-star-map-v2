@@ -1,5 +1,155 @@
 
-<!DOCTYPE html>
+<!DOC<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GP Kindness Galaxy</title>
+
+<style>
+body{
+  font-family:Arial,sans-serif;
+  background:#0a0f1f;
+  color:white;
+  margin:0;
+  padding:20px;
+}
+
+h1{
+  text-align:center;
+  color:gold;
+  font-size:42px;
+}
+
+form{
+  max-width:600px;
+  margin:auto;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+select,input,textarea,button{
+  padding:14px;
+  border-radius:8px;
+  border:none;
+  font-size:16px;
+}
+
+textarea{
+  min-height:90px;
+}
+
+button{
+  background:gold;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+#stars{
+  max-width:800px;
+  margin:40px auto;
+}
+
+.star{
+  background:#151d36;
+  padding:18px;
+  margin-bottom:15px;
+  border-radius:10px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>⭐ GP Kindness Galaxy ⭐</h1>
+
+<form id="starForm">
+  <select id="category">
+    <option value="Kindness">Kindness</option>
+    <option value="Love">Love</option>
+    <option value="Hope">Hope</option>
+    <option value="Faith">Faith</option>
+  </select>
+
+  <input type="text" id="name" placeholder="Your name (optional)">
+
+  <textarea id="description" placeholder="Describe your act..." required></textarea>
+
+  <button type="submit">Release Your Star</button>
+</form>
+
+<div id="stars"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  onSnapshot,
+  query,
+  orderBy,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDdZcIaGo_JlbSBn4r8E7y9Gy2peoK6TwI",
+  authDomain: "gp-universe.firebaseapp.com",
+  projectId: "gp-universe",
+  storageBucket: "gp-universe.firebasestorage.app",
+  messagingSenderId: "212665829690",
+  appId: "1:212665829690:web:3588e33bfb7dcc46862803",
+  measurementId: "G-HRQNEVC4BE"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const form = document.getElementById("starForm");
+const starsDiv = document.getElementById("stars");
+
+const galaxyRef = collection(db, "galaxy");
+const galaxyQuery = query(galaxyRef, orderBy("createdAt", "desc"));
+
+onSnapshot(galaxyQuery, snapshot => {
+  starsDiv.innerHTML = "";
+
+  snapshot.forEach(doc => {
+    const star = doc.data();
+
+    starsDiv.innerHTML += `
+      <div class="star">
+        <h3>${star.category || "Kindness"}</h3>
+        <strong>${star.name || "Anonymous Star"}</strong>
+        <p>${star.description || ""}</p>
+      </div>
+    `;
+  });
+});
+
+form.addEventListener("submit", async e => {
+  e.preventDefault();
+
+  const category = document.getElementById("category").value;
+  const name = document.getElementById("name").value.trim();
+  const description = document.getElementById("description").value.trim();
+
+  if (!description) return;
+
+  await addDoc(galaxyRef, {
+    category,
+    name,
+    description,
+    createdAt: serverTimestamp()
+  });
+
+  form.reset();
+});
+</script>
+
+</body>
+</html>TYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
